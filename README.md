@@ -23,3 +23,16 @@ AI-powered automation platform for hotel reservation email processing using n8n,
 ### Captura
 
 !Clasificación JSON con Gemini](screenshots/dia3-clasificacion-json.png)
+
+## Día 4 — Registro Automático
+
+- ✅ Google Sheets creado y conectado vía OAuth
+- ✅ 9 columnas diseñadas: fecha, datos del correo, clasificación de IA y estado
+- ✅ Cada correo procesado genera automáticamente una fila estructurada
+- ✅ Manejo de errores: Retry automático configurado ante fallos temporales de Gemini (503)
+- ✅ Validado con múltiples correos de prueba (distintas categorías)
+
+### Capturas
+
+![Workflow completo](screenshots/dia4-workflow-completo.png)
+![Registro en Sheets](screenshots/dia4-registro-sheets.png)
