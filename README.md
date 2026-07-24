@@ -36,3 +36,23 @@ AI-powered automation platform for hotel reservation email processing using n8n,
 
 ![Workflow completo](screenshots/dia4-workflow-completo.png)
 ![Registro en Sheets](screenshots/dia4-registro-sheets.png)
+
+
+## Día 5 – Generación Automática de Respuestas y Flujo End-to-End
+
+- [x] Configuración del modelo **Google Gemini** para la redacción de respuestas contextuales.
+- [x] Integración de prompt para adaptar el tono cordial y profesional según el idioma y tipo de solicitud del cliente.
+- [x] Conexión del nodo de **Gmail (`Create a Draft`)** para la creación automática de borradores.
+- [x] Vinculación del hilo de conversación (`Thread ID`) y asunto dinámico para mantener la secuencia del correo original.
+- [x] Resolución de bloqueo de permisos de la API (OAuth2 Scope & Cuota de almacenamiento en Google).
+- [x] Pruebas y validación del flujo completo end-to-end: Recepción de correo → Extracción de datos → Clasificación estructurada con IA → Registro en Google Sheets → Generación de respuesta y borrador en Gmail.
+
+### Capturas
+
+![Flujo Completo Día 5](screenshots/dia5-workflow-completo.png)
+![Borrador Creado en Gmail](screenshots/dia5-borrador-gmail.png)
+
+## Día 6 – Exportación, Documentación y Versionado
+
+- [x] Exportación de la lógica estructurada del flujo en formato JSON en `workflow/workflow.json`.
+- [x] Finalización de la documentación del proyecto y actualización del repositorio en GitHub.

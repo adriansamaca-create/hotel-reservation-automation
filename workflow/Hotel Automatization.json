@@ -1,0 +1,523 @@
+{
+  "name": "Hotel Automatization",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "maxResults": "={{ 10 }}",
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -1424,
+        -144
+      ],
+      "id": "8803ef99-65c2-4994-9c4e-6db91e1e5a79",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ld0AGvTgSi9N65eC",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d9161799-fa38-40a7-a4ea-5ac1ad91b391",
+              "name": "asunto",
+              "value": "={{ $('Get Raw Payload').item.json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "76f822d9-8241-4d0d-9a04-6613cdef48a8",
+              "name": "remitente",
+              "value": "={{ $('Get Raw Payload').item.json.from.text }}",
+              "type": "string"
+            },
+            {
+              "id": "21759d2a-ad00-4ecb-8a1f-d2c4f53e4318",
+              "name": "cuerpo",
+              "value": "={{ $('Get Raw Payload').item.json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "84fc41fe-d6d6-4076-86db-4386d51e1ca5",
+              "name": "fecha",
+              "value": "={{ $('Get Raw Payload').item.json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "ccb03a1a-3881-4731-9311-d90ab2dbbc3b",
+              "name": "cuerpo",
+              "value": "={{ $('Get Raw Payload').item.json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -912,
+        -144
+      ],
+      "id": "44812ce8-cb1f-4299-95b9-570e2cc96dd4",
+      "name": "Extraer Datos del Correo"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Correo a clasificar:\n   Asunto: {{ $json.asunto }}\n   Remitente: {{ $json.remitente }}\n   Cuerpo: {{ $json.cuerpo }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Eres un asistente especializado en operaciones de reservas hoteleras. Tu tarea es analizar correos de clientes y clasificarlos con precisión.\n\nCategorías válidas: Cancellation, Modification, Invoice, Upgrade, Complaint, Information\nPrioridad: High, Medium, Low\nIdioma: Spanish, English\n\nResponde ÚNICAMENTE con un objeto JSON que contenga EXACTAMENTE estas claves, sin ninguna clave adicional:\n- categoria (string)\n- prioridad (string)\n- idioma (string)\n- confidence (number entre 0 y 1)\n- numero_reserva (string)\n- check_in (string, formato YYYY-MM-DD)\n- check_out (string, formato YYYY-MM-DD)\n- hotel (string)\n- nombre_cliente (string)\n\nNo incluyas \"asunto\", \"remitente\" ni ningún otro campo del correo original.\nNo agregues texto adicional, explicaciones ni marcadores de código.\n\nEjemplos por categoría:\n- Cancellation: \"Necesito cancelar mi reserva del 20 de agosto\"\n- Modification: \"Quiero cambiar la fecha de check-in\"\n- Invoice: \"¿Pueden enviarme la factura de mi última estadía?\"\n- Upgrade: \"Quisiera mejorar a una habitación con vista al mar\"\n- Complaint: \"El servicio de limpieza no llegó a mi habitación\"\n- Information: \"¿Tienen piscina climatizada?\"\n\nNota: correos promocionales, publicitarios o de ofertas de terceros (no relacionados con una reserva propia del cliente) deben clasificarse como Information con prioridad Low.\n\nExtrae el número de reserva mencionado en el correo (formato variable, ej: \"#987654\", \"RES-2026-001\"). Si el correo no menciona ningún número de reserva, usa el texto exacto \"No especificado\".\n\nIMPORTANTE - Fechas de check-in y check-out:\nBusca cuidadosamente en el cuerpo del correo cualquier mención de fechas de llegada (check-in) o salida (check-out), incluso si están escritas en lenguaje natural. Conviértelas siempre a formato \"YYYY-MM-DD\".\n\nEjemplo: si el correo dice \"el check-in está programado para el 5 de octubre de 2026\", debes extraer check_in como \"2026-10-05\".\nEjemplo: si dice \"check-out para el 9 de octubre de 2026\", extrae check_out como \"2026-10-09\".\n\nSolo usa \"No especificado\" si el correo genuinamente no menciona ninguna fecha de check-in o check-out en ningún formato.\n\nIMPORTANTE - Hotel y nombre del cliente:\nExtrae el nombre del hotel mencionado en el correo. Si no se menciona ningún hotel, usa \"No especificado\".\n\nExtrae el nombre completo del cliente que envía la solicitud. Búscalo en la firma del correo, en el cuerpo, o en el saludo. Si no se puede determinar, usa \"No especificado\"."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -672,
+        -144
+      ],
+      "id": "20659c67-efb7-4605-b6dd-47a500ccbcd4",
+      "name": "Basic LLM Chain",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -704,
+        48
+      ],
+      "id": "5b64682c-fbc8-422b-ac9d-737e4ea4964c",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xpD3tMn7xzGgiCLY",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"categoria\": { \"type\": \"string\", \"enum\": [\"Cancellation\", \"Modification\", \"Invoice\", \"Upgrade\", \"Complaint\", \"Information\"] },\n    \"prioridad\": { \"type\": \"string\", \"enum\": [\"High\", \"Medium\", \"Low\"] },\n    \"idioma\": { \"type\": \"string\", \"enum\": [\"Spanish\", \"English\"] },\n    \"confidence\": { \"type\": \"number\" },\n    \"numero_reserva\": { \"type\": \"string\" },\n    \"check_in\": { \"type\": \"string\" },\n    \"check_out\": { \"type\": \"string\" },\n    \"hotel\": { \"type\": \"string\" },\n    \"nombre_cliente\": { \"type\": \"string\" }\n  },\n  \"required\": [\"categoria\", \"prioridad\", \"idioma\", \"confidence\", \"numero_reserva\", \"check_in\", \"check_out\", \"hotel\", \"nombre_cliente\"]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -544,
+        48
+      ],
+      "id": "1ce3be44-bcc4-4b9a-bde1-3649ee6172bf",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Q5iayn8tLxbJz8KNp6z9RKU47RI5pDxMFO6JBmqGajI",
+          "mode": "list",
+          "cachedResultName": "Hotel Reservation Automation - Registro",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Q5iayn8tLxbJz8KNp6z9RKU47RI5pDxMFO6JBmqGajI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Solicitudes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Q5iayn8tLxbJz8KNp6z9RKU47RI5pDxMFO6JBmqGajI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha_registro": "={{ new Date().toISOString() }}",
+            "Asunto": "={{ $('Extraer Datos del Correo').item.json.asunto }}",
+            "Remitente": "={{ $('Extraer Datos del Correo').item.json.remitente }}",
+            "Cuerpo": "={{ $('Extraer Datos del Correo').item.json.cuerpo }}",
+            "Categoria": "={{ JSON.parse($json.text).categoria }}",
+            "Prioridad": "={{ JSON.parse($json.text).prioridad }}",
+            "Idioma": "={{ JSON.parse($json.text).idioma }}",
+            "Confidence": "={{ JSON.parse($json.text).confidence }}",
+            "Estado": "Pending",
+            "Numero de reserva": "={{ JSON.parse($json.text).numero_reserva }}",
+            "Check in ": "={{ JSON.parse($json.text).check_in }}",
+            "Check out ": "={{ JSON.parse($json.text).check_out }}",
+            "Hotel": "={{ JSON.parse($json.text).hotel }}",
+            "Nombre cliente": "={{ JSON.parse($json.text).nombre_cliente }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha_registro",
+              "displayName": "Fecha_registro",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Asunto",
+              "displayName": "Asunto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Remitente",
+              "displayName": "Remitente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Cuerpo",
+              "displayName": "Cuerpo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Categoria",
+              "displayName": "Categoria",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Prioridad",
+              "displayName": "Prioridad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Idioma",
+              "displayName": "Idioma",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Confidence",
+              "displayName": "Confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Numero de reserva",
+              "displayName": "Numero de reserva",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Check in ",
+              "displayName": "Check in ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Check out ",
+              "displayName": "Check out ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Hotel",
+              "displayName": "Hotel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nombre cliente",
+              "displayName": "Nombre cliente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -320,
+        -144
+      ],
+      "id": "cdbdce7e-ecbe-49c8-8007-6193830f84f2",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HsqdzHABALppRQeB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "simple": false,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -1168,
+        -144
+      ],
+      "id": "9adb064e-3406-4c2f-9dc3-caca7d73d64c",
+      "name": "Get Raw Payload",
+      "webhookId": "4bc29410-f2c6-4911-80eb-ad28c21a8c4d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ld0AGvTgSi9N65eC",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Asunto: {{ $('Extraer Datos del Correo').item.json.asunto }}\nRemitente: {{ $('Extraer Datos del Correo').item.json.remitente }}\nCuerpo: {{ $('Extraer Datos del Correo').item.json.cuerpo }}\nCategoría: {{ JSON.parse($('Basic LLM Chain').item.json.text).categoria }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Eres un asistente de atención al cliente especializado en operaciones hoteleras.  Tu tarea es redactar un borrador de respuesta profesional y cordial para el cliente, basándote en el correo recibido y su clasificación.  Reglas: - Responde siempre en el mismo idioma del correo original. - Usa un tono profesional, cálido y empático. - Dirígete al cliente por su nombre si está disponible. - El borrador debe ser conciso (máximo 150 palabras). - No inventes información que no esté en el correo (fechas, precios, disponibilidad). - Si el correo es una Cancellation: confirma recepción y explica que se procesará la solicitud. - Si es Modification: confirma recepción y explica que se revisará la disponibilidad. - Si es Invoice: confirma que se enviará la factura en breve. - Si es Upgrade: confirma recepción y explica que se verificará disponibilidad de mejora. - Si es Complaint: ofrece disculpas sinceras y compromiso de solución inmediata. - Si es Information: responde de forma general indicando que el equipo proporcionará los detalles.  Devuelve ÚNICAMENTE el texto del borrador, sin asunto, sin encabezados, sin explicaciones adicionales."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -96,
+        -144
+      ],
+      "id": "9acf6abf-f865-4978-978a-ef08af41605f",
+      "name": "Generar Borrador de Respuesta",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -128,
+        32
+      ],
+      "id": "8bac8755-ec14-41a4-812e-a91466105ba2",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xpD3tMn7xzGgiCLY",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "=Re: {{ $('Extraer Datos del Correo').item.json.asunto }}",
+        "message": "={{ $json.text }}",
+        "options": {
+          "sendTo": "={{ $('Extraer Datos del Correo').item.json.remitente }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        256,
+        -144
+      ],
+      "id": "26dd60f6-2285-4961-af2d-d90f01f589f6",
+      "name": "Create a draft",
+      "webhookId": "935ecc1f-acab-45e5-93e4-68149eda6695",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ld0AGvTgSi9N65eC",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Raw Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer Datos del Correo": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        []
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Raw Payload": {
+      "main": [
+        [
+          {
+            "node": "Extraer Datos del Correo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Generar Borrador de Respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generar Borrador de Respuesta",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar Borrador de Respuesta": {
+      "main": [
+        [
+          {
+            "node": "Create a draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "9b8b250d-5663-4a8c-a0b6-bea7dcf4cbd4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "610841a71cb9c94fad5b35db92fd796513c14df6ce282e6f2fba212e1b49161c"
+  },
+  "nodeGroups": [],
+  "id": "JCChVOEoAVQkHT4M",
+  "tags": []
+}
