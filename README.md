@@ -56,3 +56,6 @@ AI-powered automation platform for hotel reservation email processing using n8n,
 
 - [x] Exportación de la lógica estructurada del flujo en formato JSON en `workflow/workflow.json`.
 - [x] Finalización de la documentación del proyecto y actualización del repositorio en GitHub.
+
+## 🔗 Repositorio del Proyecto
+- **GitHub:** [hotel-reservation-automation](https://github.com/adriansamaca-create/hotel-reservation-automation)
