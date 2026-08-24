@@ -25,11 +25,11 @@ Una plataforma de automatización que intercepta cada correo entrante, lo clasif
 
 ### AS-IS — Proceso Manual
 
-!\[Diagrama AS-IS](docs/Diagrama\_AS-IS\_\_Manual.png)
+!\[Diagrama AS-IS](docs/diagrama-as-is.png)
 
 ### TO-BE — Proceso Automatizado
 
-!\[Diagrama TO-BE](docs/Diagrama\_TO-BE\_Automatizado.png)
+!\[Diagrama TO-BE](docs/diagrama-to-be.png)
 
 \---
 
@@ -103,7 +103,7 @@ Todo lo demás           → Borrador automático → Revisión humana → Enví
 |Tiempo estimado ahorrado por correo|\~8.4 min|
 |Tiempo total ahorrado (93 correos)|\~13 horas|
 
-> Ver métricas completas en \[`metrics.md`](metrics.md) y análisis detallado en \[`docs/05-testing-results.md`](docs/05-testing-results.md)
+> Ver métricas completas en \\\\\\\[`metrics.md`](metrics.md) y análisis detallado en \\\\\\\[`docs/05-testing-results.md`](docs/05-testing-results.md)
 
 \---
 
@@ -115,11 +115,11 @@ hotel-reservation-automation/
 │   ├── 01-business-requirements.md
 │   ├── 02-solution-architecture.md
 │   ├── 05-testing-results.md
-│   ├── Diagrama\_AS-IS\_\_Manual.png
-│   └── Diagrama\_TO-BE\_Automatizado.png
+│   ├── Diagrama\\\\\\\_AS-IS\\\\\\\_\\\\\\\_Manual.png
+│   └── Diagrama\\\\\\\_TO-BE\\\\\\\_Automatizado.png
 ├── assets/
 │   └── workflow-screenshot.png
-├── sample\_emails/
+├── sample\\\\\\\_emails/
 ├── workflow/
 ├── prompt.md
 ├── metrics.md
@@ -141,8 +141,8 @@ hotel-reservation-automation/
 **1. Levantar n8n con Docker:**
 
 ```bash
-docker run -it --rm --name n8n -p 5678:5678 \\
-  -v n8n\_data:/home/node/.n8n \\
+docker run -it --rm --name n8n -p 5678:5678 \\\\\\\\
+  -v n8n\\\\\\\_data:/home/node/.n8n \\\\\\\\
   docker.n8n.io/n8nio/n8n
 ```
 
