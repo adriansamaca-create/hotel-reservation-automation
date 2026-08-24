@@ -103,7 +103,7 @@ Todo lo demás           → Borrador automático → Revisión humana → Enví
 |Tiempo estimado ahorrado por correo|\~8.4 min|
 |Tiempo total ahorrado (93 correos)|\~13 horas|
 
-> Ver métricas completas en \\\\\\\[`metrics.md`](metrics.md) y análisis detallado en \\\\\\\[`docs/05-testing-results.md`](docs/05-testing-results.md)
+> Ver métricas completas en \\\\\\\\\\\\\\\[`metrics.md`](metrics.md) y análisis detallado en \\\\\\\\\\\\\\\[`docs/05-testing-results.md`](docs/05-testing-results.md)
 
 \---
 
@@ -115,11 +115,11 @@ hotel-reservation-automation/
 │   ├── 01-business-requirements.md
 │   ├── 02-solution-architecture.md
 │   ├── 05-testing-results.md
-│   ├── Diagrama\\\\\\\_AS-IS\\\\\\\_\\\\\\\_Manual.png
-│   └── Diagrama\\\\\\\_TO-BE\\\\\\\_Automatizado.png
+│   ├── Diagrama\\\\\\\\\\\\\\\_AS-IS\\\\\\\\\\\\\\\_\\\\\\\\\\\\\\\_Manual.png
+│   └── Diagrama\\\\\\\\\\\\\\\_TO-BE\\\\\\\\\\\\\\\_Automatizado.png
 ├── assets/
 │   └── workflow-screenshot.png
-├── sample\\\\\\\_emails/
+├── sample\\\\\\\\\\\\\\\_emails/
 ├── workflow/
 ├── prompt.md
 ├── metrics.md
@@ -141,8 +141,8 @@ hotel-reservation-automation/
 **1. Levantar n8n con Docker:**
 
 ```bash
-docker run -it --rm --name n8n -p 5678:5678 \\\\\\\\
-  -v n8n\\\\\\\_data:/home/node/.n8n \\\\\\\\
+docker run -it --rm --name n8n -p 5678:5678 \\\\\\\\\\\\\\\\
+  -v n8n\\\\\\\\\\\\\\\_data:/home/node/.n8n \\\\\\\\\\\\\\\\
   docker.n8n.io/n8nio/n8n
 ```
 
@@ -168,6 +168,12 @@ docker run -it --rm --name n8n -p 5678:5678 \\\\\\\\
 * **Separador decimal en Windows:** n8n hereda la configuración regional — usar `{{ 0.9 }}` como expresión JS en lugar de valor numérico directo
 * **Simplify OFF es crítico:** el nodo Gmail con Simplify ON trunca el cuerpo del correo
 * **Human-in-the-Loop por diseño:** Gmail Draft en lugar de envío automático — reduce riesgo y genera confianza operativa
+* \## 🎬 Video Demo
+* \[Watch the full demo on YouTube](https://youtu.be/fYLxu3FUtU4)
+
+
+
+* \---
 
 \---
 
